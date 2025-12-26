@@ -1,21 +1,18 @@
-import express from 'express';
-const router=express.Router();
-router.get('/api/auth/signup',(req,res)=>{
-    res.send('signup endpoint');
-});
+import express from "express";
+import { signup, login, logout, updateProfile } from "../controllers/auth.controller.js";
+import { protectRoute } from "../middleware/auth.middleware.js";
+import { arcjetProtection } from "../middleware/arcjet.middleware.js";
 
+const router = express.Router();
 
-router.get('/api/auth/login',(req,res)=>{
-    res.send('login endpoint');
-});
+router.use(arcjetProtection);
 
+router.post("/signup", signup);
+router.post("/login", login);
+router.post("/logout", logout);
 
-router.get('/api/auth/logout',(req,res)=>{
-    res.send('logout endpoint');
-});
+router.put("/update-profile", protectRoute, updateProfile);
 
-
-
-
+router.get("/check", protectRoute, (req, res) => res.status(200).json(req.user));
 
 export default router;
